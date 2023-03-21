@@ -7,7 +7,8 @@ public class BasketMovement : MonoBehaviour
     public float speedBasket = 20;
     public float min = -8, max = 8;
     private void Update()
-    {
+    {        
+        // este codigo mueve la canasta apretando a o d
         if(Input.GetKey(KeyCode.D)) 
         { 
             transform.Translate(Vector3.right* speedBasket * Time.deltaTime);
