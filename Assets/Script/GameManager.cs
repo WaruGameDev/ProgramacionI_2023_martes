@@ -2,27 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public int puntaje;
+    public int score;
 
     public TextMeshProUGUI scoreText;
     private void Awake()
     {
         instance= this;
     }
-    public void AddPuntaje(int ptj)
+    public void AddScore(int ptj)
     {
-        puntaje += ptj;
-        if(puntaje <= 0)
+        score += ptj;
+        if(score <= 0)
         {
-            puntaje= 0;
+            score= 0;
         }
     }
     private void Update()
     {
-        scoreText.text = puntaje.ToString();
+        scoreText.text = score.ToString();
     }
 }

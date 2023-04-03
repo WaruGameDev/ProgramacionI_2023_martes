@@ -11,11 +11,11 @@ public class BasketMovement : MonoBehaviour
         // este codigo mueve la canasta apretando a o d
         if(Input.GetKey(KeyCode.D)) 
         { 
-            transform.Translate(Vector3.right* speedBasket * Time.deltaTime);
+            transform.Translate(Vector3.right * (speedBasket * Time.deltaTime));
         }
         if(Input.GetKey(KeyCode.A))
         {
-            transform.Translate(Vector3.left* speedBasket * Time.deltaTime);
+            transform.Translate(Vector3.left * (speedBasket * Time.deltaTime));
         }
         Vector3 pos = transform.position;
         pos.x = Mathf.Clamp(pos.x, min, max);   
