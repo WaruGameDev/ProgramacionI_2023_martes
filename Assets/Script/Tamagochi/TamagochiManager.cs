@@ -12,14 +12,58 @@ public class TamagochiManager : MonoBehaviour
     public float hungry, hungryThreshold = 10;
     public float clean, cleanThreshold = 10;
     public float happy, happyThreshold = 10;
+    public ParticleSystem sickParticles;
+    public Animator anim;
     public static TamagochiManager instance;
 
     public Image barHungry, barClean, barHappy;
     private void Update()
     {
-        barHungry.fillAmount = hungry / hungryThreshold;
-        barClean.fillAmount= clean / cleanThreshold;
-        barHappy.fillAmount = happy/ happyThreshold;
+        barHungry.fillAmount = GetHungry();
+        barClean.fillAmount= GetClean();
+        barHappy.fillAmount = GetHappy();
+        if(GetHungry()< .25f || GetClean() < .25f 
+            || GetHappy() < .25f)
+        {
+            anim.SetBool("Sad", true);
+            if(sickParticles.isStopped)
+            {
+                sickParticles.Play();
+            }            
+        }
+        else
+        {
+            anim.SetBool("Sad", false);
+            if(!sickParticles.isStopped)
+            {
+                sickParticles.Stop();
+            }            
+        }
+        if (GetHungry() > .75f || GetClean() > .75f
+            || GetHappy() > .75f)
+        {
+            anim.SetBool("Happy", true);
+        }
+        else
+        {
+            anim.SetBool("Happy", false);
+        }
+
+
+
+    }
+    public float GetHungry()
+    {
+
+        return hungry / hungryThreshold;
+    }
+    public float GetClean()
+    {
+        return clean / cleanThreshold;
+    }
+    public float GetHappy()
+    {
+        return happy / happyThreshold;
     }
     private void Awake()
     {
@@ -27,7 +71,8 @@ public class TamagochiManager : MonoBehaviour
     }
     private void Feed(float amount)
     {
-        hungry+= amount;
+        anim.SetBool("Eat", true);
+        hungry += amount;
         if(hungry > hungryThreshold) 
         {
             hungry = hungryThreshold;
@@ -64,6 +109,10 @@ public class TamagochiManager : MonoBehaviour
                 Happy(amount);
                 break;
         }
+    }
+    public void SetEat()
+    {
+        anim.SetBool("Eat", false);
     }
 
 }
