@@ -13,6 +13,7 @@ public class PlayerMovementPointAndClick : MonoBehaviour
     public NavMeshAgent theAgent;
     public Animator anim;
     public PLAYER_STATES states;
+    public Transform target;
     private void Update()
     {
         if(Input.GetMouseButton(0))
@@ -22,6 +23,7 @@ public class PlayerMovementPointAndClick : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
+                
                 switch (hit.collider.tag)
                 {
                     case "Ground":
@@ -31,12 +33,14 @@ public class PlayerMovementPointAndClick : MonoBehaviour
                     case "Enemy":
                         theAgent.SetDestination(hit.point);
                         states = PLAYER_STATES.RUNNING_TO_ATTACK;
+                        target = hit.transform;
                         break;
                 }
             }
         }
 
-        if (theAgent.remainingDistance <= theAgent.stoppingDistance)
+        if (theAgent.remainingDistance <= theAgent.stoppingDistance 
+            && !theAgent.pathPending)
         {
             switch (states)
             {
@@ -48,7 +52,18 @@ public class PlayerMovementPointAndClick : MonoBehaviour
                     break;
             }
         }
-        anim.SetBool("+", states == PLAYER_STATES.ATTACKING);
+        if(states== PLAYER_STATES.ATTACKING)
+        {
+            Vector3 directionToTarget = target.position - transform.position;
+            directionToTarget.y = 0; // This line ensures that the agent only rotates around the y-axis
+            Quaternion rotation = Quaternion.LookRotation(directionToTarget);
+
+            // Smoothly rotate the agent to this new rotation
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime*2);
+        }
+
+
+        anim.SetBool("Attack", states == PLAYER_STATES.ATTACKING);
 
         float vel = theAgent.velocity.magnitude / theAgent.speed;
         anim.SetFloat("Mov", vel );
