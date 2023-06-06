@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public enum PLAYER_STATES
-{
-    IDLE, RUNNING, RUNNING_TO_ATTACK, ATTACKING
-}
 
 public class PlayerMovementPointAndClick : MonoBehaviour
 {
     public NavMeshAgent theAgent;
     public Animator anim;
-    public PLAYER_STATES states;
+    public States states;
     public Transform target;
     private void Update()
     {
@@ -28,11 +24,11 @@ public class PlayerMovementPointAndClick : MonoBehaviour
                 {
                     case "Ground":
                         theAgent.SetDestination(hit.point);
-                        states = PLAYER_STATES.RUNNING;
+                        states.states = PLAYER_STATES.RUNNING;
                         break;
                     case "Enemy":
                         theAgent.SetDestination(hit.point);
-                        states = PLAYER_STATES.RUNNING_TO_ATTACK;
+                        states.states= PLAYER_STATES.RUNNING_TO_ATTACK;
                         target = hit.transform;
                         break;
                 }
@@ -42,17 +38,17 @@ public class PlayerMovementPointAndClick : MonoBehaviour
         if (theAgent.remainingDistance <= theAgent.stoppingDistance 
             && !theAgent.pathPending)
         {
-            switch (states)
+            switch ( states.states)
             {
                 case PLAYER_STATES.RUNNING:
-                    states = PLAYER_STATES.IDLE;
+                    states.states = PLAYER_STATES.IDLE;
                     break;
                 case PLAYER_STATES.RUNNING_TO_ATTACK:
-                    states = PLAYER_STATES.ATTACKING;
+                    states.states = PLAYER_STATES.ATTACKING;
                     break;
             }
         }
-        if(states== PLAYER_STATES.ATTACKING)
+        if( states.states== PLAYER_STATES.ATTACKING)
         {
             Vector3 directionToTarget = target.position - transform.position;
             directionToTarget.y = 0; // This line ensures that the agent only rotates around the y-axis
@@ -62,8 +58,8 @@ public class PlayerMovementPointAndClick : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime*2);
         }
 
-
-        anim.SetBool("Attack", states == PLAYER_STATES.ATTACKING);
+        anim.SetBool("Die", states.states == PLAYER_STATES.DIE);
+        anim.SetBool("Attack",  states.states == PLAYER_STATES.ATTACKING);
 
         float vel = theAgent.velocity.magnitude / theAgent.speed;
         anim.SetFloat("Mov", vel );

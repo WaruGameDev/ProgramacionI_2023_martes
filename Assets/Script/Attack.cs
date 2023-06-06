@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,9 @@ public class Attack : MonoBehaviour
     private Health targetHealth;
     public string tagTarget = "Enemy";
     public float damage = 10;
-    public PlayerMovementPointAndClick pMov;
+
+    public States states;
+    //public PlayerMovementPointAndClick pMov;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -29,8 +32,8 @@ public class Attack : MonoBehaviour
         if(targetHealth.health< 0)
         {
             targetHealth = null;
-            pMov.states = PLAYER_STATES.IDLE;
+            states.states = PLAYER_STATES.IDLE;
         }
-
     }
+    
 }
